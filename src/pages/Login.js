@@ -3,15 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { KeyboardAvoidingView, Platform, Text, StyleSheet, Image, TextInput, TouchableOpacity } from 'react-native';
 import logo from '../assets/logo.png';
 import api from '../services/api';
-// <Form> doesn't exist = TextInput.
 
 export default function Login({ navigation }) {
-  // state
   const [user, setUser] = useState('');
 
-  // Will execute when the component appear at the screen or when something changes.
-  // () => {} means, execute this function [ ] empty array means, just once.
-  // Will keep the user logged in.
   useEffect(() => {
     AsyncStorage.getItem('user').then(user => {
       if (user) {
@@ -23,32 +18,23 @@ export default function Login({ navigation }) {
   async function handleLogin() {
     const response = await api.post('/devs', { username: user });
 
-    // get the _id with response.data from the 'api'.
     const { _id } = response.data;
 
-    // to stay the user logged in when you refresh the page.
-    // to run it after install you must run 'pod install' inside of the file 'ios'.
-    // yarn react-native run-ios.
-    // name of the information that I want to save 'user' and the value '_id'.
-    // finish with 'useEffect'.
     await AsyncStorage.setItem('user', _id);
 
-    // use the '_id' as a second parameter to login the user.
     navigation.navigate('Main', { user: _id });
   }
 
   return (
-    // KeyboardAvoidingView to slide everything up when open the keyboard.
-    // Platform
     <KeyboardAvoidingView behavior="padding" enabled={Platform.OS === 'ios'} style={styles.container}>
       <Image source={logo} />
 
       <TextInput
-        autoCapitalize="none" // to get the first letter minuscula
+        autoCapitalize="none"
         autoCorrect={false}
         style={styles.input}
         placeholder="GitHub user"
-        placeholderTextColor="#999" // Don't edit with CSS.
+        placeholderTextColor="#999"
         value={user}
         onChangeText={setUser}
       />
